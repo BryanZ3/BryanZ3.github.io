@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trabajo Vue y Axios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+</head>
+
+<body>
+    <div id="app">
+        <!-- inicio nav-->
+        <nav class="indigo darken-4" role="navigation" style="height: 90px;">
+            <div class="nav-wrapper container">
+                <img src="https://www.pdichile.cl/images/default-source/wallpaper-header-image/logopdiG5.png">
+        </nav>
+        <!-- fin nav-->
+        <!-- inicio parallax-->
+        <div class="parallax-container" style="height: 300px;">
+            <div class="parallax"><img src="img/pdi_mejores.jpg"></div>
+        </div>
+        <!-- fin parallax-->
+
+        <div class="container">
+            <br><br>
+            <h1 class="header center light-blue-text container">Top mundial comunistas mas buscados</h1>
+            <br><br>
+            <div class="row">
+                <div class="col l4 offset-2" v-for="item in usuarios">
+                    <div class="card-panel">
+                        <ul>
+                            <li class="center">
+                                <img :src="item.picture.large">
+                            </li>
+                            <li class="center">
+                                <h6>
+                                    <p>{{item.name.first}} {{item.name.last}}</p>
+                                </h6>
+                            </li>
+                            <li class="center">
+                                <button class="btn" @click="ver_modal(item)">
+                                    Mas informacion
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="page-footer indigo darken-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col l6 s12">
+                        <h5 class="white-text">Cuartel General</h5>
+                        <p class="grey-text text-lighten-4">
+                            General Mackenna N°1370, Santiago
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright indigo darken-3">
+                <div class="container">
+                    <p>Creado por Bryan Henriquez</p>
+                </div>
+            </div>
+        </footer>
+
+        <div id="pinchemodal" class="modal">
+            <div v-if="usuario != null">
+                <div class="modal-content">
+                    <h4 class="center">Informacion de Funa</h4>
+                    <ul>
+                        <li><b>Ciudad:</b> {{usuario.location.city}}</li>
+                        <li><b>Calle:</b> {{usuario.location.street.number}}{{usuario.location.street.name}}</li>
+                        <li><b>Codigo Postal:</b> {{usuario.location.postcode}}</li>
+                        <li><b>Fecha de nacimiento:</b> {{usuario.dob.date}}</li>
+                        <li><b>Edad:</b> {{usuario.dob.age}}</li>
+                        <li><b>Celular:</b> {{usuario.cell}}</li>
+                        <li><b>Correo:</b> {{usuario.email}}</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-close waves-effect waves-green btn-flat">Salir</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src=" https://unpkg.com/axios/dist/axios.min.js "> </script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                usuarios: [],
+                url: 'https://randomuser.me/api/?results=51',
+                usuario: null
+            },
+            methods: {
+                async cargar() {
+                    var personas = await axios.get(this.url);
+                    this.usuarios = personas.data.results;
+                    console.log(personas.data);
+                    this.estado = false;
+                },
+                ver_modal(item) {
+                    this.usuario = item;
+                    var instance = M.Modal.getInstance(document.getElementById('pinchemodal'));
+                    instance.open();
+                }
+            },
+            created() {
+                this.cargar();
+            },
+            mounted() {
+                document.addEventListener('DOMContentLoaded', function () {
+                    var elems = document.querySelectorAll('.parallax');
+                    var instances = M.Parallax.init(elems);
+                });
+                document.addEventListener('DOMContentLoaded', function () {
+                    var elems = document.querySelectorAll('.modal');
+                    var instances = M.Modal.init(elems);
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>
